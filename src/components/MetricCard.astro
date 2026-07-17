@@ -1,0 +1,99 @@
+---
+interface Props {
+  metric: string;
+  value: string;
+  comparison?: string;
+  source: string;
+}
+
+const { metric, value, comparison, source } = Astro.props;
+
+// Parse leading number for counter animation
+// Handles: "7+", "97,5%", "180 dias", "1.200", etc.
+const match = value.match(/^([\d.,]+)/);
+const numStr = match ? match[1] : null;
+const suffix = numStr ? value.slice(numStr.length) : null;
+---
+
+<div class="rounded-biotocoLg border border-borderSubtle bg-white p-6 shadow-biotoco1">
+  <p class="font-body text-xs font-semibold uppercase tracking-wide text-fgMuted">{metric}</p>
+  <p
+    class="mt-2 font-display text-2xl font-bold text-biotoco-verde_vital md:text-3xl"
+    data-counter-target={numStr}
+    data-counter-suffix={suffix}
+  >
+    {value}
+  </p>
+  {comparison && (
+    <p class="mt-2 font-body text-sm text-fg/70">{comparison}</p>
+  )}
+  <p class="mt-3 border-t border-borderSubtle pt-3 font-body text-xs text-fgMuted">
+    Fonte: {source}
+  </p>
+</div>
+
+<script>
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!reducedMotion) {
+    const counters = document.querySelectorAll<HTMLElement>('[data-counter-target]');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target as HTMLElement;
+          const raw = el.dataset.counterTarget;
+          const suffix = el.dataset.counterSuffix || '';
+          if (!raw) return;
+
+          // Parse number: handle PT-BR format (1.200,5 → 1200.5)
+          const normalized = raw.replace(/\./g, '').replace(',', '.');
+          const target = parseFloat(normalized);
+          if (isNaN(target)) return;
+
+          // Determine decimal places from original
+          const commaIdx = raw.indexOf(',');
+          const decimals = commaIdx >= 0 ? raw.length - commaIdx - 1 : 0;
+          // Check if original uses dot as thousands separator
+          const useThousandsDot = raw.includes('.') && raw.indexOf('.') < raw.length - 3;
+
+          const duration = 1200;
+          const start = performance.now();
+
+          function formatNumber(n: number): string {
+            let s = decimals > 0 ? n.toFixed(decimals) : Math.round(n).toString();
+            if (decimals > 0) {
+              s = s.replace('.', ',');
+            }
+            if (useThousandsDot) {
+              const parts = s.split(',');
+              parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+              s = parts.join(',');
+            }
+            return s;
+          }
+
+          function tick(now: number) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease out cubic
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const current = target * eased;
+            el.textContent = formatNumber(current) + suffix;
+            if (progress < 1) {
+              requestAnimationFrame(tick);
+            }
+          }
+
+          el.textContent = formatNumber(0) + suffix;
+          requestAnimationFrame(tick);
+          observer.unobserve(el);
+        });
+      },
+      { threshold: 0.3 }
+    );
+
+    counters.forEach((el) => observer.observe(el));
+  }
+</script>

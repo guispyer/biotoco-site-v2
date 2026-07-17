@@ -1,0 +1,12 @@
+---
+interface Props {
+  color?: string;
+  class?: string;
+}
+
+const { color = 'biotoco-verde_vital', class: className = '' } = Astro.props;
+---
+
+<p class:list={[`eyebrow text-${color}`, className]}>
+  <slot />
+</p>

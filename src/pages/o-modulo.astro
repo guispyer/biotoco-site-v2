@@ -1,0 +1,181 @@
+---
+import DataHeavyLayout from '../layouts/DataHeavyLayout.astro';
+import Hero from '../components/Hero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import DifferentialCard from '../components/DifferentialCard.astro';
+import ModelSpecTable from '../components/ModelSpecTable.astro';
+import ComparisonTable from '../components/ComparisonTable.astro';
+import ProseContent from '../components/ProseContent.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
+import ImageStrip from '../components/ImageStrip.astro';
+import { getEntry, render } from 'astro:content';
+
+const entry = await getEntry('pages', 'o-modulo');
+if (!entry) throw new Error('Content entry not found: o-modulo');
+const { Content } = await render(entry);
+
+const {
+  title,
+  subtitle,
+  hero_cta,
+  composition,
+  differentials,
+  models,
+  patent,
+  comparison_table,
+} = entry.data as {
+  title: string;
+  subtitle: string;
+  hero_cta: string;
+  composition: Array<{ ingredient: string; proportion: string; role: string }>;
+  differentials: Array<{ name: string; description: string }>;
+  models: Array<{
+    name: string;
+    volume_cm3: number;
+    height_mm: number;
+    diameter_top_mm: number;
+    weight_g: number;
+    units_per_box: number;
+    crops: string;
+  }>;
+  patent: { number: string; issuer: string; holder: string };
+  comparison_table: {
+    axes: string[];
+    competitors: Array<{ name: string; scores: string[] }>;
+  };
+};
+---
+
+<DataHeavyLayout title={title} description={subtitle}>
+  <!-- Hero — verde_vital register -->
+  <Hero
+    slot="hero"
+    heading={title}
+    subheading={subtitle}
+    cta={hero_cta}
+    ctaLink="/contato"
+    eyebrow="Produto"
+    register="verde_vital"
+    backgroundImage="/images/product/bg7-textura.jpg"
+  />
+
+  <!-- Composition — off_white, ruled-row pattern -->
+  {composition && composition.length > 0 && (
+    <section id="composicao" class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14 scroll-mt-24">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Formulação D3" registerColor="biotoco-verde_vital" subtitle="Trio de fibras + ligante + reforço + crosslinker" class="mb-12">
+          Composição
+        </SectionTitle>
+        <ScrollReveal>
+          <div class="flex flex-col">
+            {composition.map((c) => (
+              <div class="grid grid-cols-[1fr_80px_1fr] gap-6 py-5 border-t border-hairline items-baseline max-md:grid-cols-1 max-md:gap-2 [&:last-child]:border-b">
+                <span class="font-display text-[17px] font-bold text-biotoco-azul_profundo">{c.ingredient}</span>
+                <span class="font-display text-[17px] font-bold text-biotoco-verde_vital text-right max-md:text-left">{c.proportion}</span>
+                <span class="text-[15px] leading-[1.6] text-biotoco-azul_texto_2">{c.role}</span>
+              </div>
+            ))}
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  )}
+
+  <!-- Product photos — off_white (continuation) -->
+  <section class="bg-biotoco-off_white pb-28 max-lg:pb-20 max-md:pb-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <ScrollReveal>
+        <ImageStrip
+          images={[
+            { src: '/images/product/bg7-textura.jpg', alt: 'Detalhe da textura do módulo BIOTOCO BG7' },
+            { src: '/images/science/raizes-biotoco.jpg', alt: 'Raízes penetrando as paredes do módulo BIOTOCO' },
+          ]}
+        />
+      </ScrollReveal>
+    </div>
+  </section>
+
+  <!-- Differentials — areia band -->
+  {differentials && differentials.length > 0 && (
+    <section id="diferenciais" class="bg-biotoco-areia py-28 max-lg:py-20 max-md:py-14 scroll-mt-24">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Diferenciais" registerColor="biotoco-verde_vital" subtitle="7 vantagens competitivas concretas" class="mb-12">
+          Diferenciais
+        </SectionTitle>
+        <div class="grid gap-4 md:grid-cols-2">
+          {differentials.map((d, i) => (
+            <ScrollReveal delay={i * 80}>
+              <DifferentialCard
+                name={d.name}
+                description={d.description}
+                index={i}
+              />
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Model specs — off_white -->
+  {models && models.length > 0 && (
+    <section id="modelos" class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14 scroll-mt-24">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Catálogo" registerColor="biotoco-verde_vital" subtitle="Do eucalipto industrial ao cacau de raiz pivô" class="mb-12">
+          Catálogo de modelos
+        </SectionTitle>
+        <ScrollReveal>
+          <ModelSpecTable models={models} />
+        </ScrollReveal>
+      </div>
+    </section>
+  )}
+
+  <!-- Comparison table — areia band -->
+  {comparison_table && (
+    <section id="comparacao" class="bg-biotoco-areia py-28 max-lg:py-20 max-md:py-14 scroll-mt-24">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Comparação" registerColor="biotoco-verde_vital" subtitle="BIOTOCO vs tubete plástico vs paperpot" class="mb-12">
+          Comparação técnica
+        </SectionTitle>
+        <ScrollReveal>
+          <ComparisonTable
+            axes={comparison_table.axes}
+            competitors={comparison_table.competitors}
+          />
+        </ScrollReveal>
+      </div>
+    </section>
+  )}
+
+  <!-- Patent + Prose — off_white -->
+  <section class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      {patent && (
+        <div id="patente" class="scroll-mt-24 mb-20">
+          <SectionTitle tag="h2" eyebrow="Propriedade intelectual" registerColor="biotoco-verde_vital" class="mb-12">
+            Patente
+          </SectionTitle>
+          <ScrollReveal>
+            <div class="border border-hairline rounded-[14px] bg-biotoco-off_white_claro px-7 py-6 max-w-[600px]">
+              <p class="font-display text-lg font-bold text-biotoco-azul_profundo">Patente {patent.number}</p>
+              <p class="mt-1 text-[15px] text-biotoco-cinza_apoio">{patent.issuer}</p>
+              <p class="text-[15px] text-biotoco-cinza_apoio">{patent.holder}</p>
+            </div>
+          </ScrollReveal>
+        </div>
+      )}
+
+      <div id="detalhes" class="scroll-mt-24">
+        <SectionTitle tag="h2" eyebrow="Detalhes" registerColor="biotoco-verde_vital" class="mb-12">
+          Detalhes técnicos
+        </SectionTitle>
+        <div class="max-w-[720px]">
+          <ProseContent>
+            <Content />
+          </ProseContent>
+        </div>
+      </div>
+    </div>
+  </section>
+</DataHeavyLayout>

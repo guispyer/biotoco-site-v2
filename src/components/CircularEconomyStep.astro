@@ -1,0 +1,40 @@
+---
+interface Props {
+  step: number;
+  label: string;
+  description: string;
+  isLast?: boolean;
+}
+
+const { step, label, description, isLast = false } = Astro.props;
+
+const stepColors = [
+  { bg: 'bg-biotoco-bege_terra', text: 'text-biotoco-off_white' },
+  { bg: 'bg-biotoco-verde_vital', text: 'text-biotoco-off_white' },
+  { bg: 'bg-biotoco-verde_escuro', text: 'text-biotoco-off_white' },
+];
+const colors = stepColors[(step - 1) % stepColors.length];
+---
+
+<div class="flex items-start gap-4">
+  <!-- Step number -->
+  <div class:list={[
+    'flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-display text-lg font-bold',
+    colors.bg, colors.text,
+  ]}>
+    {step}
+  </div>
+  <!-- Content -->
+  <div class="flex-1">
+    <h3 class="font-display text-lg font-bold text-biotoco-azul_profundo">{label}</h3>
+    <p class="mt-1 font-body text-sm leading-relaxed text-fgMuted">{description}</p>
+  </div>
+  <!-- Arrow (except last) -->
+  {!isLast && (
+    <div class="hidden items-center md:flex">
+      <svg class="h-6 w-6 text-biotoco-cinza_apoio" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+      </svg>
+    </div>
+  )}
+</div>

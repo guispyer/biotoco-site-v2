@@ -1,0 +1,216 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Hero from '../components/Hero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import FounderCard from '../components/FounderCard.astro';
+import PullQuote from '../components/PullQuote.astro';
+import TimelineEntry from '../components/TimelineEntry.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
+import { getEntry } from 'astro:content';
+
+const entry = await getEntry('pages', 'sobre');
+if (!entry) throw new Error('Content entry not found: sobre');
+
+const {
+  title,
+  subtitle,
+  founder,
+  legal,
+  timeline,
+  academic_partnerships,
+} = entry.data as {
+  title: string;
+  subtitle: string;
+  founder: { name: string; role: string; email: string; phone: string; background: string };
+  legal: { company: string; cnpj: string; headquarters: string; plant: string; founded: number; patent: string };
+  timeline: Array<{ year: number; event: string }>;
+  academic_partnerships: Array<{ institution: string; type: string }>;
+};
+---
+
+<BaseLayout title={title} description={subtitle}>
+  <Nav />
+
+  <!-- 1. Hero — bege_terra register -->
+  <Hero
+    heading={title}
+    subheading={subtitle}
+    cta="Falar com Claudio"
+    ctaLink="/contato"
+    backgroundImage="/images/factory/fachada.jpg"
+    eyebrow="Nossa história"
+    register="bege_terra"
+    locationLine="Rio Claro, SP"
+  />
+
+  <main>
+    <!-- 2. Founder section — off_white -->
+    <section class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <ScrollReveal>
+          <FounderCard
+            name={founder.name}
+            role={founder.role}
+            quote={subtitle}
+            bio={founder.background}
+            email={founder.email}
+            phone={founder.phone}
+          />
+        </ScrollReveal>
+      </div>
+    </section>
+
+    <!-- 3. Origin story pt.1 — off_white (continuation) -->
+    <section class="bg-biotoco-off_white pb-28 max-lg:pb-20 max-md:pb-14">
+      <div class="max-w-[720px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <ScrollReveal>
+          <p class="text-[20px] leading-[1.6] text-biotoco-azul_profundo [text-wrap:pretty]">
+            Em 2013, Claudio Rocha Bastos ganhou o primeiro lugar na FINEP com embalagens biodegradáveis feitas de fécula de mandioca. O produto funcionava. O problema era o tempo: as embalagens se decompunham rápido demais para aguentar um ciclo de cultivo de muda em viveiro — com irrigação diária, umidade constante, meses de espera até o campo.
+          </p>
+          <p class="mt-8 text-[17px] leading-[1.7] text-biotoco-azul_texto [text-wrap:pretty]">
+            Em 2014, durante uma visita à Aracruz Celulose no Espírito Santo, um gerente de viveiro fez a pergunta que mudou o caminho da empresa.
+          </p>
+        </ScrollReveal>
+      </div>
+    </section>
+
+    <!-- 4. Aracruz question — bege_terra band (THE emotional anchor) -->
+    <PullQuote
+      variant="centered"
+      eyebrow="2014"
+      quote="Dá para usar esse material para criar mudas?"
+      followUp="A resposta honesta era não. Mas a pergunta era boa demais para ser descartada."
+    />
+
+    <!-- 5. Origin story pt.2 — off_white + factory diptych -->
+    <section class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+      <div class="max-w-[1000px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <ScrollReveal>
+          <p class="text-[17px] leading-[1.7] text-biotoco-azul_texto [text-wrap:pretty]">
+            Claudio passou os anos seguintes pesquisando a resposta correta — não uma embalagem que resistisse ao viveiro por coincidência, mas um módulo projetado para durar exatamente o tempo que a muda precisa e se decompor no ritmo certo depois do plantio. A matéria-prima que resolveu o problema inicial foi o bagaço de malte de cervejaria: rico em nitrogênio orgânico, abundante como resíduo industrial e com propriedades estruturais que a fécula de mandioca não tinha.
+          </p>
+          <p class="mt-6 text-[17px] leading-[1.7] text-biotoco-azul_texto [text-wrap:pretty]">
+            Nos anos seguintes, a equipe de P&D evoluiu a formulação para resíduos agroindustriais brasileiros mais estáveis e acessíveis — bagaço de cana-de-açúcar, fibra de coco e celulose kraft — mantendo a mesma plataforma de formação a vácuo. A formulação D3 combina três escalas de fibra com ligantes naturais de mandioca, resultando na única formulação a passar no teste de resistência à água graças à barreira hidrofóbica natural da lignina (~10,7%).
+          </p>
+        </ScrollReveal>
+
+        <!-- Factory diptych -->
+        <ScrollReveal>
+          <figure class="mt-16 grid grid-cols-2 gap-6 max-md:grid-cols-1">
+            <img
+              src="/images/factory/producao-maquina.jpg"
+              alt="Máquina de formação a vácuo na planta industrial de Rio Claro"
+              class="w-full h-[340px] object-cover rounded-[14px] max-md:h-[240px]"
+              loading="lazy"
+            />
+            <img
+              src="/images/factory/fabrica-geral.jpg"
+              alt="Visão geral da fábrica Biotoco em Rio Claro, SP"
+              class="w-full h-[340px] object-cover rounded-[14px] max-md:h-[240px]"
+              loading="lazy"
+            />
+            <figcaption class="col-span-2 text-[13px] text-biotoco-cinza_apoio mt-3 max-md:col-span-1">
+              Planta industrial em Rio Claro, SP — formação a vácuo e acabamento.
+            </figcaption>
+          </figure>
+        </ScrollReveal>
+
+        <ScrollReveal>
+          <p class="mt-12 text-[17px] leading-[1.7] text-biotoco-azul_texto [text-wrap:pretty]">
+            Em 2017 nasceu a TOCO Engenharia e Inovação Ambiental Ltda, com sede no Rio de Janeiro e planta industrial em Rio Claro, SP. Em 2020 a tecnologia de formação a vácuo foi patenteada no INPI (BR 102020013631-3). De lá para cá: convênios com UFRRJ e UFV, relatório técnico da EMBRAPA-Solo, análises laboratoriais pelo IAC, Bioagri e Mérieux NutriScience, testes em campo com Suzano, SOS Mata Atlântica, Instituto Terra, Reserva Natural Vale e mais de uma dezena de outros viveiros e programas de restauração.
+          </p>
+          <p class="mt-8 text-[20px] leading-[1.6] font-medium text-biotoco-azul_profundo [text-wrap:pretty]">
+            Dez anos depois da pergunta em Aracruz, a resposta tem patente, fábrica e resultados documentados em campo.
+          </p>
+          <p class="mt-6 text-[17px] leading-[1.7] text-biotoco-azul_texto [text-wrap:pretty]">
+            A empresa não tem departamento de marketing. Tem uma equipe técnica que passa tempo nos viveiros, acompanha os experimentos e ajusta a formulação quando o cliente precisa de algo diferente. É assim que funciona uma plataforma de moldagem de biomassas — não como produto de prateleira, mas como solução desenvolvida junto com quem usa.
+          </p>
+          <p class="mt-6 text-[17px] leading-[1.7] text-biotoco-azul_texto [text-wrap:pretty]">
+            O contato continua sendo direto com Claudio.
+          </p>
+        </ScrollReveal>
+      </div>
+    </section>
+
+    <!-- 6. Timeline — areia band -->
+    <section class="bg-biotoco-areia py-28 max-lg:py-20 max-md:py-14">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Trajetória" registerColor="biotoco-bege_terra" class="mb-12">
+          De uma pergunta à fábrica
+        </SectionTitle>
+        <div>
+          {timeline.map((t: { year: number; event: string }, i: number) => (
+            <ScrollReveal delay={i * 80} direction="left">
+              <TimelineEntry
+                year={t.year}
+                event={t.event}
+                isLast={i === timeline.length - 1}
+                isPivot={t.year === 2014}
+              />
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Partnerships — off_white -->
+    <section class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Validação" registerColor="biotoco-bege_terra" class="mb-12">
+          Parcerias acadêmicas
+        </SectionTitle>
+        <div class="grid gap-6 md:grid-cols-3">
+          {academic_partnerships.map((p: { institution: string; type: string }) => (
+            <ScrollReveal>
+              <div class="border border-hairline rounded-[14px] bg-biotoco-off_white_claro px-7 py-6">
+                <h3 class="font-display font-bold text-[22px] leading-[1.25] text-biotoco-azul_profundo">
+                  {p.institution.includes(' \u2014 ') ? p.institution.split(' \u2014 ')[0] : p.institution}
+                </h3>
+                {p.institution.includes(' \u2014 ') && (
+                  <p class="mt-1 text-[14px] text-biotoco-cinza_apoio">
+                    {p.institution.split(' \u2014 ')[1]}
+                  </p>
+                )}
+                <p class="mt-3 text-[15px] leading-[1.6] text-biotoco-azul_texto">
+                  {p.type}
+                </p>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+
+        <!-- 8. Legal strip -->
+        {legal && (
+          <div class="mt-20 border-t border-hairline pt-6">
+            <dl class="flex flex-wrap gap-x-12 gap-y-3 text-[13px] text-biotoco-cinza_apoio">
+              <div>
+                <dt class="sr-only">Razão social</dt>
+                <dd>{legal.company}</dd>
+              </div>
+              <div>
+                <dt class="sr-only">CNPJ</dt>
+                <dd>CNPJ {legal.cnpj}</dd>
+              </div>
+              <div>
+                <dt class="sr-only">Sede</dt>
+                <dd>Sede: {legal.headquarters}</dd>
+              </div>
+              <div>
+                <dt class="sr-only">Planta</dt>
+                <dd>Planta: {legal.plant}</dd>
+              </div>
+              <div>
+                <dt class="sr-only">Patente</dt>
+                <dd>Patente {legal.patent}</dd>
+              </div>
+            </dl>
+          </div>
+        )}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

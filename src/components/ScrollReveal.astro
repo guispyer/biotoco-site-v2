@@ -1,0 +1,44 @@
+---
+interface Props {
+  direction?: 'up' | 'in' | 'left' | 'right';
+  delay?: number;
+  class?: string;
+  tag?: 'div' | 'section';
+}
+
+const {
+  direction = 'up',
+  delay,
+  class: className = '',
+  tag: Tag = 'div',
+} = Astro.props;
+---
+
+<Tag
+  data-reveal={direction}
+  data-reveal-delay={delay}
+  class={className}
+>
+  <slot />
+</Tag>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target as HTMLElement;
+        const delay = parseInt(el.dataset.revealDelay || '0', 10);
+        if (delay > 0) {
+          setTimeout(() => el.classList.add('revealed'), delay);
+        } else {
+          el.classList.add('revealed');
+        }
+        observer.unobserve(el);
+      });
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -50px 0px' }
+  );
+
+  document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
+</script>

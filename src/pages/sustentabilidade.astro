@@ -1,0 +1,140 @@
+---
+import SegmentValueLayout from '../layouts/SegmentValueLayout.astro';
+import Hero from '../components/Hero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import CircularEconomyStep from '../components/CircularEconomyStep.astro';
+import CO2Callout from '../components/CO2Callout.astro';
+import ValueCard from '../components/ValueCard.astro';
+import ProseContent from '../components/ProseContent.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
+import { getEntry, render } from 'astro:content';
+
+const entry = await getEntry('pages', 'sustentabilidade');
+if (!entry) throw new Error('Content entry not found: sustentabilidade');
+const { Content } = await render(entry);
+
+const {
+  title,
+  subtitle,
+  circular_economy_steps,
+  co2_data,
+  certifications,
+  esg_segments,
+} = entry.data as {
+  title: string;
+  subtitle: string;
+  circular_economy_steps: Array<{ step: number; label: string; description: string }>;
+  co2_data: { value: string; unit: string; basis: string; comparison: string; source: string };
+  certifications: Array<{ name: string; description: string }>;
+  esg_segments: Array<{ segment: string; why: string }>;
+};
+---
+
+<SegmentValueLayout title={title} description={subtitle} fullBleed>
+  <!-- Hero — verde_vital register -->
+  <Hero
+    slot="hero"
+    heading={title}
+    subheading={subtitle}
+    cta="Solicitar laudos ambientais"
+    ctaLink="/contato"
+    eyebrow="Sustentabilidade"
+    register="verde_vital"
+    backgroundImage="/images/mudas/muda-campo.jpg"
+  />
+
+  <!-- Circular economy steps — off_white -->
+  {circular_economy_steps && circular_economy_steps.length > 0 && (
+    <section class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Economia circular" registerColor="biotoco-verde_vital" subtitle="Do resíduo agroindustrial de volta ao solo — em três etapas" class="mb-12">
+          Economia circular
+        </SectionTitle>
+        <div class="space-y-6 md:flex md:items-start md:gap-4 md:space-y-0">
+          {circular_economy_steps.map((s, i) => (
+            <ScrollReveal class="flex-1" delay={i * 150}>
+              <CircularEconomyStep
+                step={s.step}
+                label={s.label}
+                description={s.description}
+                isLast={i === circular_economy_steps.length - 1}
+              />
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- CO2 callout — areia band -->
+  {co2_data && (
+    <section class="bg-biotoco-areia py-28 max-lg:py-20 max-md:py-14">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <ScrollReveal>
+          <CO2Callout
+            value={co2_data.value}
+            unit={co2_data.unit}
+            basis={co2_data.basis}
+            comparison={co2_data.comparison}
+            source={co2_data.source}
+          />
+        </ScrollReveal>
+      </div>
+    </section>
+  )}
+
+  <!-- Certifications — off_white -->
+  {certifications && certifications.length > 0 && (
+    <section class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Certificações" registerColor="biotoco-verde_vital" subtitle="Documentação técnica que comprova — não apenas afirma" class="mb-12">
+          Certificações e laudos
+        </SectionTitle>
+        <div class="grid gap-4 md:grid-cols-2">
+          {certifications.map((c, i) => (
+            <ScrollReveal delay={i * 100}>
+              <ValueCard
+                title={c.name}
+                description={c.description}
+                accentColor="verde_vital"
+              />
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ESG segments — areia band -->
+  {esg_segments && esg_segments.length > 0 && (
+    <section class="bg-biotoco-areia py-28 max-lg:py-20 max-md:py-14">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Quem se beneficia" registerColor="biotoco-verde_vital" subtitle="Para quem sustentabilidade é pré-requisito, não diferencial" class="mb-12">
+          Quem se beneficia
+        </SectionTitle>
+        <div class="grid gap-4 md:grid-cols-2">
+          {esg_segments.map((s, i) => (
+            <ScrollReveal delay={i * 100}>
+              <ValueCard
+                title={s.segment}
+                description={s.why}
+                accentColor="verde_vital"
+              />
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Prose body — off_white -->
+  <section class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <div class="max-w-[720px]">
+        <ProseContent>
+          <Content />
+        </ProseContent>
+      </div>
+    </div>
+  </section>
+</SegmentValueLayout>

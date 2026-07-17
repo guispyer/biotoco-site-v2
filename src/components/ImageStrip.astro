@@ -1,0 +1,35 @@
+---
+interface ImageItem {
+  src: string;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  images: ImageItem[];
+  class?: string;
+  variant?: 'editorial' | 'documentary';
+}
+
+const { images, class: className = '', variant = 'documentary' } = Astro.props;
+
+const cols =
+  images.length <= 2 ? 'grid-cols-2' :
+  images.length === 3 ? 'grid-cols-2 sm:grid-cols-3' :
+  'grid-cols-2 sm:grid-cols-4';
+
+const radiusClass = variant === 'editorial' ? 'leaf-corner' : 'rounded-[14px]';
+---
+
+<div class:list={['grid gap-3', cols, className]}>
+  {images.map(({ src, alt, caption }) => (
+    <figure>
+      <div class:list={['overflow-hidden', radiusClass]}>
+        <img src={src} alt={alt} class="h-56 w-full object-cover" loading="lazy" />
+      </div>
+      {caption && (
+        <figcaption class="text-[13px] text-biotoco-cinza_apoio mt-3">{caption}</figcaption>
+      )}
+    </figure>
+  ))}
+</div>

@@ -1,0 +1,70 @@
+---
+import SegmentValueLayout from '../../layouts/SegmentValueLayout.astro';
+import Hero from '../../components/Hero.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import ValueCard from '../../components/ValueCard.astro';
+import ProseContent from '../../components/ProseContent.astro';
+import ScrollReveal from '../../components/ScrollReveal.astro';
+import { getEntry, render } from 'astro:content';
+
+const entry = await getEntry('pages', 'solucoes/para-reflorestamento');
+if (!entry) throw new Error('Content entry not found: solucoes/para-reflorestamento');
+const { Content } = await render(entry);
+
+const {
+  title,
+  description,
+  impact,
+} = entry.data as {
+  title: string;
+  description: string;
+  impact: Array<{ title: string; description: string; icon: string }>;
+};
+---
+
+<SegmentValueLayout title={title} description={description} fullBleed>
+  <!-- Hero — terracota register (sales page) -->
+  <Hero
+    slot="hero"
+    heading={title}
+    subheading={description}
+    cta="Falar sobre seu projeto"
+    ctaLink="/contato"
+    eyebrow="Reflorestamento"
+    register="terracota"
+    backgroundImage="/images/mudas/muda-campo.jpg"
+  />
+
+  <!-- Impact cards — off_white -->
+  {impact && impact.length > 0 && (
+    <section class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Impacto" registerColor="biotoco-terracota" subtitle="Alto estabelecimento, crescimento acelerado e impacto real na biodiversidade" class="mb-12">
+          Impacto comprovado em campo
+        </SectionTitle>
+        <div class="grid gap-6 md:grid-cols-3">
+          {impact.map((item, i) => (
+            <ScrollReveal delay={i * 100}>
+              <ValueCard
+                title={item.title}
+                description={item.description}
+                accentColor="terracota"
+              />
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Prose body — areia band -->
+  <section class="bg-biotoco-areia py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <div class="max-w-[720px]">
+        <ProseContent>
+          <Content />
+        </ProseContent>
+      </div>
+    </div>
+  </section>
+</SegmentValueLayout>

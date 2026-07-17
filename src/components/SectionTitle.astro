@@ -1,0 +1,37 @@
+---
+interface Props {
+  tag?: 'h2' | 'h3' | 'h4';
+  subtitle?: string;
+  class?: string;
+  align?: 'left' | 'center';
+  eyebrow?: string;
+  registerColor?: string;
+}
+
+const {
+  tag: Tag = 'h2',
+  subtitle,
+  class: className = '',
+  align = 'left',
+  eyebrow,
+  registerColor = 'biotoco-verde_vital',
+} = Astro.props;
+
+const alignClass = align === 'center' ? 'text-center' : 'text-left';
+---
+
+<div class:list={[alignClass, className]}>
+  {eyebrow && (
+    <p class:list={[`eyebrow text-${registerColor} mb-4`, align === 'center' && 'mx-auto']}>
+      {eyebrow}
+    </p>
+  )}
+  <Tag class="font-display font-bold text-biotoco-azul_profundo tracking-[-0.01em] [text-wrap:pretty]">
+    <slot />
+  </Tag>
+  {subtitle && (
+    <p class:list={['mt-3 max-w-2xl text-lg text-biotoco-azul_texto font-body [text-wrap:pretty]', align === 'center' && 'mx-auto']}>
+      {subtitle}
+    </p>
+  )}
+</div>

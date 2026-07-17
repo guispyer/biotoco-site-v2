@@ -1,0 +1,201 @@
+---
+import SegmentValueLayout from '../layouts/SegmentValueLayout.astro';
+import Hero from '../components/Hero.astro';
+import SavingsGrid from '../components/SavingsGrid.astro';
+import RootComparison from '../components/RootComparison.astro';
+import ObjectionAccordion from '../components/ObjectionAccordion.astro';
+import CompatibilityList from '../components/CompatibilityList.astro';
+import ComparisonTable from '../components/ComparisonTable.astro';
+import PilotCTA from '../components/PilotCTA.astro';
+import StatusTag from '../components/StatusTag.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
+import { getEntry } from 'astro:content';
+
+const entry = await getEntry('pages', 'para-viveiros');
+if (!entry) throw new Error('Content entry not found: para-viveiros');
+
+const {
+  title,
+  subtitle,
+  hero_cta,
+  objections,
+  savings_items,
+  compatibility_points,
+  pilot_cta,
+} = entry.data as {
+  title: string;
+  subtitle: string;
+  hero_cta: string;
+  objections: Array<{ myth: string; reality: string }>;
+  savings_items: Array<{ category: string; description: string }>;
+  compatibility_points: string[];
+  pilot_cta: { headline: string; description: string; cta: string };
+};
+
+// Client data parsed from prose body
+const clients: Array<{ name: string; location: string; detail: string; status: 'ativo' | 'em-teste' }> = [
+  { name: 'BIONEST', location: 'BA', detail: '200 mil peças/mês — mogno africano', status: 'ativo' },
+  { name: 'Acácia Amarela', location: 'RJ', detail: 'B230 e B300, capacidade 200 mil peças', status: 'ativo' },
+  { name: 'Areté', location: 'RJ', detail: 'Viveiro em Búzios — plantio direto', status: 'ativo' },
+  { name: 'Régua', location: 'RJ', detail: 'Viveiro de mata atlântica', status: 'ativo' },
+  { name: 'SOS Mata Atlântica', location: '', detail: '10 mil peças, potencial 50–100 mil/mês', status: 'em-teste' },
+  { name: 'Arbogen', location: '', detail: '80 milhões de mudas/ano — eucalipto', status: 'em-teste' },
+  { name: 'Camará', location: '', detail: '700 mil mudas/mês — cadeia Suzano', status: 'em-teste' },
+  { name: 'Viveirão', location: '', detail: '1 milhão de mudas/ano — café', status: 'em-teste' },
+  { name: 'Agronossa', location: '', detail: 'B20 e BG7 para eucalipto', status: 'em-teste' },
+];
+
+const savingsRows: Array<{ label: string; detail: string; amount: string; type: 'saving' | 'cost' }> = [
+  { label: 'Logística reversa', detail: 'Coleta, frete, lavagem, desinfecção, reembalagem', amount: 'Eliminada', type: 'saving' },
+  { label: 'Substrato comercial', detail: 'CRA 300–400% reduz dependência de irrigação', amount: 'Reduz', type: 'saving' },
+  { label: 'Mão de obra de plantio', detail: 'Zero desentubetamento no campo', amount: '−25%', type: 'saving' },
+  { label: 'Mortalidade em campo', detail: 'Raiz intacta, zero estresse de transplante', amount: 'Reduz', type: 'saving' },
+  { label: 'Capex de equipamento', detail: 'Opera com infraestrutura existente', amount: 'Zero', type: 'saving' },
+];
+
+// Comparison table data from prose
+const compAxes = [
+  'Logística reversa',
+  'Desentubetamento',
+  'Capex de máquina',
+  '100% biodegradável',
+  'Compatível com bandeja existente',
+  'Retenção de água (CRA)',
+];
+
+const compSystems = [
+  { name: 'BIOTOCO', scores: ['Zero', 'Zero', 'Nenhum', 'Sim', 'Sim', '300–400%'] },
+  { name: 'Tubete plástico', scores: ['Sim, custo recorrente', 'Sim', 'Nenhum', 'Não', '—', 'Nenhuma'] },
+  { name: 'Khrin / paperpot', scores: ['Zero', 'Zero', '~R$ 800K', 'Sim', 'Não', 'Sem dado'] },
+  { name: 'Ellepot', scores: ['Zero', 'Zero', 'Variável', 'Não (30% poliéster)', 'Não', 'Sem dado'] },
+];
+
+// Dealbreakers: [rowIdx, competitorIdx excluding Biotoco]
+const dealbreakers: [number, number][] = [
+  [0, 0], // Tubete: logística reversa
+  [1, 0], // Tubete: desentubetamento
+  [2, 1], // Khrin: capex ~R$ 800K
+  [3, 0], // Tubete: não biodegradável
+  [3, 2], // Ellepot: não 100% biodegradável
+  [4, 1], // Khrin: incompatível com bandeja
+  [4, 2], // Ellepot: incompatível com bandeja
+];
+---
+
+<SegmentValueLayout title={title} description={subtitle} fullBleed>
+  {/* 1. Hero — terracota register */}
+  <Hero
+    slot="hero"
+    heading={title}
+    subheading={subtitle}
+    cta={hero_cta}
+    ctaLink="/contato"
+    backgroundImage="/images/hero/mudas-top.jpg"
+    eyebrow="Para Viveiros"
+    register="terracota"
+    locationLine="Fabricado em Rio Claro, SP"
+  />
+
+  {/* 2. Savings ledger — off_white */}
+  <ScrollReveal tag="section" class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <SavingsGrid
+        eyebrow="Custo real"
+        heading="Economia real por ciclo"
+        lead="Cinco linhas de custo que o preço do tubete não mostra"
+        rows={savingsRows}
+      />
+    </div>
+  </ScrollReveal>
+
+  {/* 3. Root comparison — azul_profundo centerpiece */}
+  <ScrollReveal>
+    <RootComparison
+      eyebrow="Prova científica"
+      heading="O que sustenta os números"
+      paragraphs={[
+        'A UFRRJ documentou desenvolvimento radicular significativamente superior ao tubete plástico em experimento controlado. Sistema radicular mais ramificado nos módulos BIOTOCO versus tubetes plásticos.',
+        'A UFV, com apoio Embrapii, acompanha B300-EM e B55-BL há 22 meses em teste de campo contínuo. A EMBRAPA-Solo confirmou conformidade com a ABNT 15.448. Patente BR 102020013631-3.',
+      ]}
+      ctaText="Ver dados científicos"
+      ctaLink="/ciencia"
+      photos={[
+        { src: '/images/science/comparacao-raizes.jpg', alt: 'Comparação do sistema radicular: BIOTOCO vs tubete plástico', caption: 'Estudo UFRRJ — raízes comparadas' },
+        { src: '/images/science/raizes-biotoco.jpg', alt: 'Sistema radicular desenvolvido com módulo BIOTOCO', caption: 'Raiz densa e distribuída, sem espiralamento' },
+      ]}
+    />
+  </ScrollReveal>
+
+  {/* 4. Myth/reality dialog — off_white */}
+  <ScrollReveal tag="section" class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1000px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <Eyebrow color="biotoco-terracota" class="mb-4">Mitos vs. Realidade</Eyebrow>
+      <h2 class="font-display font-bold text-[36px] leading-[1.15] tracking-[-0.01em] text-biotoco-azul_profundo [text-wrap:pretty] mb-12 max-lg:text-[30px] max-md:text-[26px]">
+        O que ouvimos no mercado — e a resposta baseada em dados
+      </h2>
+      <ObjectionAccordion objections={objections} />
+    </div>
+  </ScrollReveal>
+
+  {/* 5. Clients + Compatibility — areia band */}
+  <ScrollReveal tag="section" class="bg-biotoco-areia py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <div class="grid grid-cols-2 gap-20 max-lg:grid-cols-1 max-lg:gap-14">
+        {/* Left: Client list */}
+        <div>
+          <Eyebrow color="biotoco-terracota" class="mb-4">Quem já opera</Eyebrow>
+          <h2 class="font-display font-bold text-[36px] leading-[1.15] tracking-[-0.01em] text-biotoco-azul_profundo [text-wrap:pretty] mb-12 max-lg:text-[30px] max-md:text-[26px]">
+            Viveiros em produção
+          </h2>
+          <div class="flex flex-col">
+            {clients.map((client) => (
+              <div class="flex items-center justify-between gap-4 py-5 border-t border-hairline [&:last-child]:border-b">
+                <div>
+                  <strong class="font-display font-bold text-[17px] text-biotoco-azul_profundo">
+                    {client.name}
+                  </strong>
+                  {client.location && (
+                    <span class="ml-2 text-sm text-biotoco-cinza_apoio">({client.location})</span>
+                  )}
+                  <span class="block text-sm text-biotoco-azul_texto_2 mt-0.5">{client.detail}</span>
+                </div>
+                <StatusTag status={client.status} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Right: Compatibility */}
+        <div>
+          <Eyebrow color="biotoco-terracota" class="mb-4">Compatibilidade</Eyebrow>
+          <h2 class="font-display font-bold text-[36px] leading-[1.15] tracking-[-0.01em] text-biotoco-azul_profundo [text-wrap:pretty] mb-12 max-lg:text-[30px] max-md:text-[26px]">
+            Funciona com o que você já tem
+          </h2>
+          <CompatibilityList points={compatibility_points} />
+        </div>
+      </div>
+    </div>
+  </ScrollReveal>
+
+  {/* 6. Comparison table — off_white */}
+  <ScrollReveal tag="section" class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <Eyebrow color="biotoco-terracota" class="mb-4">Comparação direta</Eyebrow>
+      <h2 class="font-display font-bold text-[36px] leading-[1.15] tracking-[-0.01em] text-biotoco-azul_profundo [text-wrap:pretty] mb-12 max-lg:text-[30px] max-md:text-[26px]">
+        BIOTOCO vs. alternativas
+      </h2>
+      <ComparisonTable axes={compAxes} competitors={compSystems} dealbreakers={dealbreakers} />
+    </div>
+  </ScrollReveal>
+
+  {/* 7. Pilot CTA — bege_terra band */}
+  <PilotCTA
+    headline={pilot_cta.headline}
+    description={pilot_cta.description}
+    cta={pilot_cta.cta}
+    photoSrc="/images/mudas/equipe-viveiro.jpg"
+    photoAlt="Equipe de viveiro com módulos BIOTOCO"
+    reassurance="Resposta em até 2 dias úteis"
+  />
+</SegmentValueLayout>

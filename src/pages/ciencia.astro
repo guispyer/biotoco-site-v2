@@ -1,0 +1,201 @@
+---
+import DataHeavyLayout from '../layouts/DataHeavyLayout.astro';
+import Hero from '../components/Hero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import MetricCard from '../components/MetricCard.astro';
+import LabAnalysisCard from '../components/LabAnalysisCard.astro';
+import ChemicalTable from '../components/ChemicalTable.astro';
+import FieldTestCard from '../components/FieldTestCard.astro';
+import CertificationBadge from '../components/CertificationBadge.astro';
+import ProseContent from '../components/ProseContent.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
+import ImageStrip from '../components/ImageStrip.astro';
+import { getEntry, render } from 'astro:content';
+
+const entry = await getEntry('pages', 'ciencia');
+if (!entry) throw new Error('Content entry not found: ciencia');
+const { Content } = await render(entry);
+
+const {
+  title,
+  subtitle,
+  lab_analyses,
+  chemical_analysis,
+  field_tests,
+  key_metrics,
+  certifications,
+  academic_partners,
+} = entry.data as {
+  title: string;
+  subtitle: string;
+  lab_analyses: Array<{ lab: string; what: string; key_results: string[] }>;
+  chemical_analysis: { standard: string; note: string; values: Array<{ element: string; unit: string; value: string }> };
+  field_tests: Array<{ institution: string; type: string; key_metric: string; crop: string; contacts?: string }>;
+  key_metrics: Array<{ metric: string; value: string; comparison?: string; source: string }>;
+  certifications: string[];
+  academic_partners: string[];
+};
+---
+
+<DataHeavyLayout title={title} description={subtitle}>
+  <!-- Hero — bege_terra register -->
+  <Hero
+    slot="hero"
+    heading={title}
+    subheading={subtitle}
+    cta="Solicitar laudos técnicos"
+    ctaLink="/contato"
+    eyebrow="Base científica"
+    register="bege_terra"
+    backgroundImage="/images/science/raizes-macro.jpg"
+  />
+
+  <!-- Key metrics — off_white -->
+  {key_metrics && key_metrics.length > 0 && (
+    <section id="metricas" class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14 scroll-mt-24">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Resultados" registerColor="biotoco-bege_terra" class="mb-12">
+          Métricas-chave
+        </SectionTitle>
+        <div class="grid gap-4 sm:grid-cols-2">
+          {key_metrics.map((m, i) => (
+            <ScrollReveal delay={i * 100}>
+              <MetricCard
+                metric={m.metric}
+                value={m.value}
+                comparison={m.comparison}
+                source={m.source}
+              />
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Evidence photos — off_white (continuation) -->
+  <section class="bg-biotoco-off_white pb-28 max-lg:pb-20 max-md:pb-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <ScrollReveal>
+        <ImageStrip
+          images={[
+            { src: '/images/science/raizes-macro.jpg', alt: 'Macro das raízes crescendo sobre a superfície do módulo BIOTOCO' },
+            { src: '/images/science/comparacao-raizes.jpg', alt: 'Comparação de raízes: Paper Pot vs BIOTOCO vs Tubete Papel' },
+          ]}
+        />
+      </ScrollReveal>
+    </div>
+  </section>
+
+  <!-- Lab analyses — areia band -->
+  {lab_analyses && lab_analyses.length > 0 && (
+    <section id="laudos" class="bg-biotoco-areia py-28 max-lg:py-20 max-md:py-14 scroll-mt-24">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Laudos" registerColor="biotoco-bege_terra" subtitle="Arsênio, cádmio, chumbo, cromo, níquel, selênio, mercúrio — todos dentro dos limites" class="mb-12">
+          Laudos laboratoriais
+        </SectionTitle>
+        <div class="grid gap-4 md:grid-cols-3">
+          {lab_analyses.map((la, i) => (
+            <ScrollReveal delay={i * 100}>
+              <LabAnalysisCard
+                lab={la.lab}
+                what={la.what}
+                key_results={la.key_results}
+              />
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Chemical analysis — off_white -->
+  {chemical_analysis && (
+    <section id="composicao" class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14 scroll-mt-24">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Composição" registerColor="biotoco-bege_terra" class="mb-12">
+          Composição química
+        </SectionTitle>
+        <ScrollReveal>
+          <ChemicalTable
+            standard={chemical_analysis.standard}
+            note={chemical_analysis.note}
+            values={chemical_analysis.values}
+          />
+        </ScrollReveal>
+      </div>
+    </section>
+  )}
+
+  <!-- Field tests — areia band -->
+  {field_tests && field_tests.length > 0 && (
+    <section id="campo" class="bg-biotoco-areia py-28 max-lg:py-20 max-md:py-14 scroll-mt-24">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Validação em campo" registerColor="biotoco-bege_terra" subtitle="Universidades, ONGs e viveiros em produção real" class="mb-12">
+          Testes de campo e validação
+        </SectionTitle>
+        <div class="grid gap-4 sm:grid-cols-2">
+          {field_tests.map((ft, i) => (
+            <ScrollReveal delay={i * 100}>
+              <FieldTestCard
+                institution={ft.institution}
+                type={ft.type}
+                key_metric={ft.key_metric}
+                crop={ft.crop}
+              />
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Certifications + Academic partners — off_white -->
+  <section class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      {certifications && certifications.length > 0 && (
+        <div id="certificacoes" class="scroll-mt-24">
+          <SectionTitle tag="h2" eyebrow="Registros" registerColor="biotoco-bege_terra" class="mb-12">
+            Certificações e registros
+          </SectionTitle>
+          <ScrollReveal>
+            <div class="flex flex-wrap gap-3">
+              {certifications.map((c) => (
+                <CertificationBadge label={c} />
+              ))}
+            </div>
+          </ScrollReveal>
+        </div>
+      )}
+
+      {academic_partners && academic_partners.length > 0 && (
+        <div id="parceiros" class="mt-20 scroll-mt-24">
+          <SectionTitle tag="h2" eyebrow="Rede" registerColor="biotoco-bege_terra" class="mb-12">
+            Parceiros acadêmicos
+          </SectionTitle>
+          <div class="flex flex-col">
+            {academic_partners.map((p) => (
+              <ScrollReveal>
+                <div class="py-5 border-t border-hairline last:border-b">
+                  <span class="font-display text-[17px] font-bold text-biotoco-azul_profundo">{p}</span>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Prose body -->
+      <div id="detalhes" class="mt-20 scroll-mt-24">
+        <SectionTitle tag="h2" eyebrow="Detalhes" registerColor="biotoco-bege_terra" class="mb-12">
+          Detalhes técnicos
+        </SectionTitle>
+        <div class="max-w-[720px]">
+          <ProseContent>
+            <Content />
+          </ProseContent>
+        </div>
+      </div>
+    </div>
+  </section>
+</DataHeavyLayout>

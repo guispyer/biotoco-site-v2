@@ -1,0 +1,28 @@
+---
+interface Props {
+  name: string;
+  description: string;
+  index?: number;
+}
+
+const { name, description, index = 0 } = Astro.props;
+
+const accentColors = [
+  'border-l-biotoco-verde_vital',
+  'border-l-biotoco-verde_escuro',
+  'border-l-biotoco-terracota',
+  'border-l-biotoco-azul_profundo',
+  'border-l-biotoco-bege_terra',
+  'border-l-biotoco-marrom_profundo',
+  'border-l-biotoco-cinza_apoio',
+];
+const borderClass = accentColors[index % accentColors.length];
+---
+
+<div class:list={[
+  'rounded-biotocoLg border border-borderSubtle border-l-4 bg-white p-6 shadow-biotoco1 transition-shadow hover:shadow-biotoco2',
+  borderClass,
+]}>
+  <h3 class="font-display text-base font-bold text-biotoco-azul_profundo">{name}</h3>
+  <p class="mt-2 font-body text-sm leading-relaxed text-fgMuted">{description}</p>
+</div>

@@ -1,0 +1,50 @@
+---
+interface Props {
+  models: Array<{
+    name: string;
+    volume_cm3: number;
+    height_mm: number;
+    diameter_top_mm: number;
+    weight_g: number;
+    units_per_box: number;
+    crops: string;
+  }>;
+}
+
+const { models } = Astro.props;
+---
+
+<div class="rounded-biotocoLg border border-borderSubtle bg-white shadow-biotoco1 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full">
+      <thead>
+        <tr class="border-b border-borderSubtle bg-biotoco-azul_profundo text-biotoco-off_white">
+          <th class="px-4 py-3 text-left font-body text-xs font-semibold uppercase tracking-wide">Modelo</th>
+          <th class="px-4 py-3 text-right font-body text-xs font-semibold uppercase tracking-wide">Volume</th>
+          <th class="px-4 py-3 text-right font-body text-xs font-semibold uppercase tracking-wide">Altura</th>
+          <th class="px-4 py-3 text-right font-body text-xs font-semibold uppercase tracking-wide">Ø Topo</th>
+          <th class="px-4 py-3 text-right font-body text-xs font-semibold uppercase tracking-wide">Peso</th>
+          <th class="px-4 py-3 text-right font-body text-xs font-semibold uppercase tracking-wide">Peças/cx</th>
+          <th class="px-4 py-3 text-left font-body text-xs font-semibold uppercase tracking-wide">Culturas</th>
+        </tr>
+      </thead>
+      <tbody>
+        {models.map((m, i) => (
+          <tr class:list={[i % 2 === 0 ? 'bg-white' : 'bg-biotoco-off_white/30', 'border-b border-borderSubtle last:border-0']}>
+            <td class="px-4 py-3">
+              <span class="rounded-biotocoSm bg-biotoco-azul_profundo/10 px-2.5 py-1 font-display text-sm font-bold text-biotoco-azul_profundo">
+                {m.name}
+              </span>
+            </td>
+            <td class="px-4 py-3 text-right font-body text-sm text-fg/80">{m.volume_cm3} cm³</td>
+            <td class="px-4 py-3 text-right font-body text-sm text-fg/80">{m.height_mm} mm</td>
+            <td class="px-4 py-3 text-right font-body text-sm text-fg/80">{m.diameter_top_mm} mm</td>
+            <td class="px-4 py-3 text-right font-body text-sm text-fg/80">{m.weight_g} g</td>
+            <td class="px-4 py-3 text-right font-body text-sm text-fg/80">{m.units_per_box}</td>
+            <td class="px-4 py-3 font-body text-sm text-fgMuted">{m.crops}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>

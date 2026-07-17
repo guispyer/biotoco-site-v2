@@ -1,0 +1,57 @@
+---
+interface Props {
+  items?: Array<{ category: string; description: string }>;
+  rows?: Array<{ label: string; detail?: string; amount: string; type: 'saving' | 'cost' }>;
+  totalLabel?: string;
+  totalAmount?: string;
+  eyebrow?: string;
+  heading?: string;
+  lead?: string;
+}
+
+const { rows, totalLabel, totalAmount, eyebrow, heading, lead, items } = Astro.props;
+
+const useLegacy = !rows && items;
+---
+
+{useLegacy && items ? (
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {items.map((item) => (
+      <div class="bg-biotoco-off_white_claro border border-hairline rounded-[14px] p-6">
+        <h3 class="font-display text-sm font-bold text-biotoco-azul_profundo mb-3">{item.category}</h3>
+        <p class="text-sm leading-relaxed text-biotoco-azul_texto_2">{item.description}</p>
+      </div>
+    ))}
+  </div>
+) : rows ? (
+  <div class="grid grid-cols-[400px_1fr] gap-20 max-lg:grid-cols-1 max-lg:gap-10">
+    <div>
+      {eyebrow && <p class="eyebrow text-biotoco-terracota mb-4">{eyebrow}</p>}
+      {heading && <h2 class="font-display font-bold text-[36px] leading-[1.15] tracking-[-0.01em] text-biotoco-azul_profundo [text-wrap:pretty] max-md:text-[26px]">{heading}</h2>}
+      {lead && <p class="mt-4 text-lg leading-[1.6] text-biotoco-azul_texto [text-wrap:pretty]">{lead}</p>}
+    </div>
+    <div class="flex flex-col tabular-nums">
+      {rows.map((row, i) => (
+        <div class:list={[
+          'grid grid-cols-[1fr_auto] items-baseline gap-6 py-[22px] border-t border-hairline',
+          i === rows.length - 1 && 'border-b'
+        ]}>
+          <div>
+            <strong class="font-display font-bold text-[19px] max-md:text-base">{row.label}</strong>
+            {row.detail && <span class="block text-sm text-biotoco-cinza_apoio">{row.detail}</span>}
+          </div>
+          <span class:list={[
+            'font-display font-extrabold text-[30px] max-md:text-[22px]',
+            row.type === 'saving' ? 'text-biotoco-verde_escuro' : 'text-biotoco-terracota'
+          ]}>{row.amount}</span>
+        </div>
+      ))}
+      {totalLabel && totalAmount && (
+        <div class="grid grid-cols-[1fr_auto] items-baseline gap-6 pt-[26px]">
+          <strong class="font-display font-bold text-xl text-biotoco-marrom_profundo">{totalLabel}</strong>
+          <span class="font-display font-extrabold text-[44px] text-biotoco-terracota max-md:text-[30px]">{totalAmount}</span>
+        </div>
+      )}
+    </div>
+  </div>
+) : null}

@@ -1,0 +1,128 @@
+---
+interface Props {
+  heading: string;
+  subheading: string;
+  cta: string;
+  ctaLink: string;
+  backgroundImage?: string;
+  eyebrow?: string;
+  register?: string;
+  locationLine?: string;
+}
+
+const {
+  heading,
+  subheading,
+  cta,
+  ctaLink,
+  backgroundImage,
+  eyebrow,
+  register = 'verde_vital',
+  locationLine,
+} = Astro.props;
+
+const registerColorMap: Record<string, string> = {
+  verde_vital: 'text-biotoco-verde_vital',
+  terracota: 'text-biotoco-terracota',
+  bege_terra: 'text-biotoco-bege_terra',
+  verde_escuro: 'text-biotoco-verde_escuro',
+};
+
+const registerBgMap: Record<string, string> = {
+  verde_vital: 'bg-biotoco-verde_vital',
+  terracota: 'bg-biotoco-terracota',
+  bege_terra: 'bg-biotoco-bege_terra',
+  verde_escuro: 'bg-biotoco-verde_escuro',
+};
+
+const eyebrowColor = registerColorMap[register] || 'text-biotoco-verde_vital';
+const leafBg = registerBgMap[register] || 'bg-biotoco-verde_vital';
+const isLongHeading = heading.length > 60;
+---
+
+{/* Desktop + Tablet: split grid layout */}
+<section class="relative bg-biotoco-azul_profundo text-biotoco-off_white max-md:hidden">
+  <div class="grid grid-cols-[56%_44%] min-h-[640px] max-lg:grid-cols-[60%_40%] max-lg:min-h-[420px]">
+    {/* Text panel */}
+    <div class="relative flex flex-col justify-center gap-7 py-24 pl-16 pr-20 max-lg:py-14 max-lg:pl-10 max-lg:pr-12">
+      <div class="texture-diamond pointer-events-none absolute inset-0" aria-hidden="true"></div>
+      <div class="relative">
+        {eyebrow && (
+          <p class:list={['eyebrow mb-4', eyebrowColor]}>{eyebrow}</p>
+        )}
+        <h1 class:list={[
+          'font-display font-bold tracking-[-0.01em] text-biotoco-off_white [text-wrap:pretty]',
+          isLongHeading
+            ? 'text-[50px] leading-[1.1] max-lg:text-[34px]'
+            : 'text-[56px] leading-[1.1] max-lg:text-[36px]',
+        ]}>
+          {heading}
+        </h1>
+        <p class="mt-7 text-[20px] leading-[1.6] text-biotoco-off_white/80 max-w-[540px] [text-wrap:pretty] max-lg:text-[17px]">
+          {subheading}
+        </p>
+        <div class="flex items-center gap-6 mt-8">
+          <a href={ctaLink} class="btn-primary">{cta}</a>
+          {locationLine && (
+            <span class="text-[15px] font-medium text-biotoco-off_white/60 max-lg:hidden">{locationLine}</span>
+          )}
+        </div>
+      </div>
+    </div>
+
+    {/* Photo panel */}
+    <div class="relative overflow-hidden">
+      {backgroundImage ? (
+        <img
+          src={backgroundImage}
+          alt=""
+          class="absolute inset-0 size-full object-cover"
+          loading="eager"
+        />
+      ) : (
+        <div class="absolute inset-0 bg-biotoco-azul_profundo"></div>
+      )}
+    </div>
+  </div>
+
+  {/* Leaf seam at junction */}
+  <div class:list={[
+    'absolute left-[56%] bottom-0 -translate-x-1/2 w-[180px] h-[152px] rounded-tl-full max-lg:left-[60%] max-lg:w-[120px] max-lg:h-[100px]',
+    leafBg,
+  ]} aria-hidden="true"></div>
+</section>
+
+{/* Mobile: stacked, photo first */}
+<section class="bg-biotoco-azul_profundo text-biotoco-off_white md:hidden">
+  <div class="relative h-[260px] overflow-hidden">
+    {backgroundImage ? (
+      <img
+        src={backgroundImage}
+        alt=""
+        class="absolute inset-0 size-full object-cover"
+        loading="eager"
+      />
+    ) : (
+      <div class="absolute inset-0 bg-biotoco-azul_profundo"></div>
+    )}
+    <div class:list={[
+      'absolute right-0 bottom-0 w-24 h-20 rounded-tl-full',
+      leafBg,
+    ]} aria-hidden="true"></div>
+  </div>
+  <div class="flex flex-col gap-4 px-6 pt-8 pb-10">
+    {eyebrow && (
+      <p class:list={['eyebrow text-[12px]', eyebrowColor]}>{eyebrow}</p>
+    )}
+    <h1 class:list={[
+      'font-display font-bold tracking-[-0.01em] text-biotoco-off_white [text-wrap:pretty]',
+      isLongHeading ? 'text-[30px] leading-[1.15]' : 'text-[32px] leading-[1.15]',
+    ]}>
+      {heading}
+    </h1>
+    <p class="text-[16px] leading-[1.6] text-biotoco-off_white/80 [text-wrap:pretty]">
+      {subheading}
+    </p>
+    <a href={ctaLink} class="btn-primary self-start text-[16px] px-[26px] py-[15px] mt-2">{cta}</a>
+  </div>
+</section>

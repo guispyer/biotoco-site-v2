@@ -1,0 +1,19 @@
+---
+interface Props {
+  status: 'ativo' | 'em-teste';
+  label?: string;
+}
+
+const { status, label } = Astro.props;
+
+const text = label || (status === 'ativo' ? 'Ativo' : 'Em teste');
+---
+
+<span class:list={[
+  'text-[12px] font-semibold uppercase tracking-[.08em] px-3 py-1 rounded-full inline-block',
+  status === 'ativo'
+    ? 'bg-biotoco-verde_vital text-biotoco-off_white'
+    : 'border border-biotoco-bege_terra text-biotoco-marrom_profundo'
+]}>
+  {text}
+</span>

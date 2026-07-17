@@ -1,0 +1,21 @@
+---
+interface Props {
+  objections: Array<{ myth: string; reality: string }>;
+}
+
+const { objections } = Astro.props;
+---
+
+<div class="flex flex-col gap-11">
+  {objections.map((item) => (
+    <div class="flex flex-col gap-4">
+      <p class="italic text-[22px] leading-[1.5] text-biotoco-marrom_profundo max-w-[640px] [text-wrap:pretty]">
+        &ldquo;{item.myth}&rdquo;
+      </p>
+      <div class="ml-24 max-md:ml-6 max-w-[680px] bg-biotoco-off_white_claro border border-hairline
+                  border-l-[3px] border-l-biotoco-verde_vital rounded-[14px] px-7 py-6">
+        <p class="text-base leading-[1.6] text-biotoco-azul_texto">{item.reality}</p>
+      </div>
+    </div>
+  ))}
+</div>

@@ -1,0 +1,99 @@
+---
+interface Props {
+  axes: string[];
+  competitors: Array<{
+    name: string;
+    scores: string[];
+  }>;
+  dealbreakers?: Array<[number, number]>;
+}
+
+const { axes, competitors, dealbreakers = [] } = Astro.props;
+
+const biotoco = competitors.find((c) => c.name === 'BIOTOCO');
+const others = competitors.filter((c) => c.name !== 'BIOTOCO');
+const allSystems = biotoco ? [biotoco, ...others] : others;
+
+function isDealbreaker(rowIdx: number, compIdx: number): boolean {
+  return dealbreakers.some(([r, c]) => r === rowIdx && c === compIdx);
+}
+---
+
+<div class="max-md:hidden">
+  <div class="grid text-[15px] leading-[1.5]" style={`grid-template-columns: 280px repeat(${allSystems.length}, 1fr)`}>
+    <div class="py-4 pr-4"></div>
+    {allSystems.map((sys) => (
+      <div class:list={[
+        'py-4 px-4 text-center font-display font-bold',
+        sys.name === 'BIOTOCO'
+          ? 'bg-biotoco-azul_profundo text-biotoco-off_white text-[17px] rounded-t-[14px]'
+          : 'text-base text-biotoco-azul_texto_2'
+      ]}>
+        {sys.name}
+      </div>
+    ))}
+
+    {axes.map((axis, rowIdx) => (
+      <>
+        <div class="py-4 pr-4 font-semibold border-t border-hairline text-biotoco-azul_profundo">
+          {axis}
+        </div>
+        {allSystems.map((sys, sysIdx) => {
+          const isBiotoco = sys.name === 'BIOTOCO';
+          const isLast = rowIdx === axes.length - 1;
+          const isDealer = !isBiotoco && isDealbreaker(rowIdx, sysIdx - (biotoco ? 1 : 0));
+          return (
+            <div class:list={[
+              'py-4 px-4 text-center',
+              isBiotoco
+                ? `bg-biotoco-azul_profundo text-biotoco-off_white font-semibold border-t border-biotoco-off_white/20 ${isLast ? 'rounded-b-[14px]' : ''}`
+                : `border-t border-hairline ${isDealer ? 'text-biotoco-terracota' : 'text-biotoco-azul_texto_2'}`
+            ]}>
+              {sys.scores[rowIdx]}
+            </div>
+          );
+        })}
+      </>
+    ))}
+  </div>
+</div>
+
+<div class="md:hidden flex flex-col gap-4">
+  {allSystems.map((sys) => (
+    <div class:list={[
+      'rounded-[14px] overflow-hidden',
+      sys.name === 'BIOTOCO'
+        ? 'bg-biotoco-azul_profundo text-biotoco-off_white'
+        : 'bg-biotoco-off_white_claro border border-hairline'
+    ]}>
+      <div class:list={[
+        'px-5 py-4 font-display font-bold text-lg',
+        sys.name === 'BIOTOCO' ? 'text-biotoco-off_white' : 'text-biotoco-azul_profundo'
+      ]}>
+        {sys.name}
+      </div>
+      <div class="flex flex-col">
+        {axes.map((axis, rowIdx) => {
+          const isBiotoco = sys.name === 'BIOTOCO';
+          const sysIdx = allSystems.indexOf(sys);
+          const isDealer = !isBiotoco && isDealbreaker(rowIdx, sysIdx - (biotoco ? 1 : 0));
+          return (
+            <div class:list={[
+              'flex justify-between items-baseline px-5 py-3',
+              isBiotoco ? 'border-t border-biotoco-off_white/20' : 'border-t border-hairline'
+            ]}>
+              <span class:list={[
+                'text-sm font-semibold',
+                isBiotoco ? 'text-biotoco-off_white/70' : 'text-biotoco-azul_texto_2'
+              ]}>{axis}</span>
+              <span class:list={[
+                'text-sm text-right',
+                isBiotoco ? 'text-biotoco-off_white font-semibold' : isDealer ? 'text-biotoco-terracota' : 'text-biotoco-azul_texto'
+              ]}>{sys.scores[rowIdx]}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  ))}
+</div>

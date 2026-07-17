@@ -1,0 +1,34 @@
+---
+interface Props {
+  year: number;
+  event: string;
+  isLast?: boolean;
+  isPivot?: boolean;
+}
+
+const { year, event, isLast = false, isPivot = false } = Astro.props;
+---
+
+<div class="grid grid-cols-[120px_20px_1fr] gap-x-6 max-md:grid-cols-1 max-md:gap-x-0">
+  <span class:list={[
+    'font-display font-extrabold text-[26px] py-5 max-md:text-[22px] max-md:py-0 max-md:mb-1',
+    isPivot ? 'text-biotoco-terracota' : 'text-biotoco-verde_escuro'
+  ]}>
+    {year}
+  </span>
+  <span class:list={[
+    'relative border-l border-biotoco-azul_profundo/25 max-md:hidden',
+    isLast && 'border-l-0'
+  ]}>
+    <span class:list={[
+      'absolute -left-1.5 top-[30px] size-[11px] rounded-full',
+      isPivot ? 'bg-biotoco-terracota' : 'bg-biotoco-verde_vital'
+    ]}></span>
+  </span>
+  <p class:list={[
+    'py-6 max-md:py-2 max-md:pb-6',
+    isPivot ? 'font-bold text-biotoco-marrom_profundo' : 'text-biotoco-azul_texto'
+  ]}>
+    {event}
+  </p>
+</div>

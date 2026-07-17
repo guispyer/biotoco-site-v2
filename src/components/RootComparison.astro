@@ -1,0 +1,59 @@
+---
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  paragraphs: string[];
+  ctaText?: string;
+  ctaLink?: string;
+  photos: Array<{
+    src: string;
+    alt: string;
+    caption?: string;
+  }>;
+}
+
+const {
+  eyebrow,
+  heading,
+  paragraphs,
+  ctaText,
+  ctaLink = '/contato',
+  photos,
+} = Astro.props;
+---
+
+<section class="bg-biotoco-azul_profundo text-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+  <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+    <div class="grid grid-cols-[1fr_540px] gap-20 items-center max-lg:grid-cols-1 max-lg:gap-12">
+      <div>
+        {eyebrow && <p class="eyebrow text-biotoco-verde_vital mb-4">{eyebrow}</p>}
+        <h2 class="font-display font-bold text-[40px] leading-[1.15] tracking-[-0.01em] [text-wrap:pretty] max-lg:text-[30px] max-md:text-[26px]">
+          {heading}
+        </h2>
+        {paragraphs.map((para) => (
+          <p class="mt-5 text-lg leading-[1.6] text-biotoco-off_white/80 [text-wrap:pretty]">{para}</p>
+        ))}
+        {ctaText && (
+          <div class="mt-8">
+            <a href={ctaLink} class="btn-secondary-dark">{ctaText}</a>
+          </div>
+        )}
+      </div>
+      <div class="grid grid-cols-2 gap-5 max-lg:gap-4">
+        {photos.slice(0, 2).map((photo, i) => (
+          <figure class:list={[i === 1 && 'pt-12 max-md:pt-0']}>
+            <img
+              src={photo.src}
+              alt={photo.alt}
+              class="w-full h-[520px] object-cover rounded-[14px] max-md:h-[340px]"
+              loading="lazy"
+            />
+            {photo.caption && (
+              <figcaption class="mt-3 text-[13px] text-biotoco-off_white/60">{photo.caption}</figcaption>
+            )}
+          </figure>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

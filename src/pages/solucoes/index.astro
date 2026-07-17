@@ -1,0 +1,75 @@
+---
+import SegmentValueLayout from '../../layouts/SegmentValueLayout.astro';
+import Hero from '../../components/Hero.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
+import ProseContent from '../../components/ProseContent.astro';
+import ScrollReveal from '../../components/ScrollReveal.astro';
+import { getEntry, render } from 'astro:content';
+
+const entry = await getEntry('pages', 'solucoes');
+if (!entry) throw new Error('Content entry not found: solucoes');
+const { Content } = await render(entry);
+
+const {
+  title,
+  description,
+  solutions_overview,
+} = entry.data as {
+  title: string;
+  description: string;
+  solutions_overview: Array<{ segment: string; description: string; link: string }>;
+};
+---
+
+<SegmentValueLayout title={title} description={description} fullBleed>
+  <!-- Hero — verde_vital register -->
+  <Hero
+    slot="hero"
+    heading="Soluções por Segmento"
+    subheading={description}
+    cta="Falar com nossa equipe"
+    ctaLink="/contato"
+    eyebrow="Soluções"
+    register="verde_vital"
+  />
+
+  <!-- Solutions cards — off_white -->
+  {solutions_overview && solutions_overview.length > 0 && (
+    <section class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Segmentos" registerColor="biotoco-verde_vital" subtitle="Encontre a solução ideal para o seu negócio" class="mb-12">
+          Nossos segmentos
+        </SectionTitle>
+        <div class="grid gap-6 md:grid-cols-3">
+          {solutions_overview.map((sol, i) => (
+            <ScrollReveal delay={i * 120}>
+              <a href={sol.link} class="group block border border-hairline rounded-[14px] bg-biotoco-off_white_claro p-8 transition-colors hover:border-biotoco-azul_profundo/30">
+                <h3 class="font-display text-xl font-bold text-biotoco-azul_profundo group-hover:text-biotoco-verde_vital transition-colors">
+                  {sol.segment}
+                </h3>
+                <p class="mt-2 text-[15px] leading-[1.6] text-biotoco-azul_texto_2">{sol.description}</p>
+                <span class="mt-4 inline-flex items-center gap-1 text-[15px] font-semibold text-biotoco-verde_vital">
+                  Saiba mais
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+              </a>
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Prose body — areia band -->
+  <section class="bg-biotoco-areia py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <div class="max-w-[720px]">
+        <ProseContent>
+          <Content />
+        </ProseContent>
+      </div>
+    </div>
+  </section>
+</SegmentValueLayout>

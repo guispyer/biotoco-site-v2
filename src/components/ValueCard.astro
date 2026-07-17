@@ -1,0 +1,27 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  icon?: string;
+  accentColor?: string;
+}
+
+const { title, description, accentColor = 'verde_vital' } = Astro.props;
+
+const colorMap: Record<string, { bg: string; border: string }> = {
+  verde_vital: { bg: 'bg-biotoco-verde_vital/10', border: 'border-l-biotoco-verde_vital' },
+  terracota: { bg: 'bg-biotoco-terracota/10', border: 'border-l-biotoco-terracota' },
+  verde_escuro: { bg: 'bg-biotoco-verde_escuro/10', border: 'border-l-biotoco-verde_escuro' },
+  azul_profundo: { bg: 'bg-biotoco-azul_profundo/10', border: 'border-l-biotoco-azul_profundo' },
+};
+
+const colors = colorMap[accentColor] ?? colorMap.verde_vital;
+---
+
+<div class:list={[
+  'rounded-biotocoLg border border-borderSubtle border-l-4 bg-white p-6 shadow-biotoco1 transition-shadow hover:shadow-biotoco2',
+  colors.border,
+]}>
+  <h3 class="font-display text-lg font-bold text-biotoco-azul_profundo">{title}</h3>
+  <p class="mt-2 font-body text-sm leading-relaxed text-fgMuted">{description}</p>
+</div>

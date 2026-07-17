@@ -1,0 +1,61 @@
+---
+interface Props {
+  name: string;
+  role: string;
+  background: string;
+  photoSrc?: string;
+  photoAlt?: string;
+  quote?: string;
+  bio?: string;
+  email?: string;
+  phone?: string;
+}
+
+const { name, role, background, photoSrc, photoAlt = '', quote, bio, email, phone } = Astro.props;
+---
+
+<div class="grid grid-cols-[440px_1fr] gap-20 items-center max-lg:grid-cols-1 max-lg:gap-10">
+  {photoSrc ? (
+    <img
+      src={photoSrc}
+      alt={photoAlt || name}
+      class="w-full h-[560px] object-cover object-[center_30%] leaf-corner max-md:h-[340px]"
+      loading="lazy"
+    />
+  ) : (
+    <div class="w-full h-[560px] bg-biotoco-off_white_claro leaf-corner flex items-center justify-center max-md:h-[340px]">
+      <span class="font-display font-bold text-[80px] text-biotoco-azul_profundo/20" aria-hidden="true">
+        {name.split(' ').map((n: string) => n[0]).join('').slice(0, 2)}
+      </span>
+    </div>
+  )}
+  <div>
+    <p class="eyebrow text-biotoco-verde_escuro">Fundador</p>
+    <h2 class="font-display font-bold text-[40px] leading-[1.15] mt-4 mb-1.5 text-biotoco-azul_profundo max-md:text-[26px]">
+      {name}
+    </h2>
+    <p class="text-[17px] font-medium text-biotoco-cinza_apoio mb-7">{role}</p>
+    {quote ? (
+      <blockquote class="pl-6 border-l-[3px] border-biotoco-verde_vital">
+        <p class="text-[21px] leading-[1.6] max-w-[560px] text-biotoco-azul_profundo [text-wrap:pretty]">{quote}</p>
+      </blockquote>
+    ) : (
+      <p class="text-base leading-[1.6] text-biotoco-azul_texto max-w-[560px]">{background}</p>
+    )}
+    {bio && <p class="mt-7 text-base text-biotoco-azul_texto_2 max-w-[560px]">{bio}</p>}
+    {(email || phone) && (
+      <div class="mt-6 flex flex-wrap gap-4">
+        {email && (
+          <a href={`mailto:${email}`} class="text-sm text-biotoco-azul_profundo hover:text-biotoco-verde_vital transition-colors">
+            {email}
+          </a>
+        )}
+        {phone && (
+          <a href={`tel:${phone.replace(/\D/g, '')}`} class="text-sm text-biotoco-azul_profundo hover:text-biotoco-verde_vital transition-colors">
+            {phone}
+          </a>
+        )}
+      </div>
+    )}
+  </div>
+</div>

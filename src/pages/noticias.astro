@@ -1,0 +1,36 @@
+---
+import SegmentValueLayout from '../layouts/SegmentValueLayout.astro';
+import Hero from '../components/Hero.astro';
+import ProseContent from '../components/ProseContent.astro';
+import { getEntry, render } from 'astro:content';
+
+const entry = await getEntry('pages', 'noticias');
+if (!entry) throw new Error('Content entry not found: noticias');
+const { Content } = await render(entry);
+
+const { title, description } = entry.data;
+---
+
+<SegmentValueLayout title={title} description={description} fullBleed>
+  <!-- Hero — verde_vital register -->
+  <Hero
+    slot="hero"
+    heading={title}
+    subheading={description}
+    cta="Falar com nossa equipe"
+    ctaLink="/contato"
+    eyebrow="Notícias"
+    register="verde_vital"
+  />
+
+  <!-- Prose body — off_white -->
+  <section class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <div class="max-w-[720px]">
+        <ProseContent>
+          <Content />
+        </ProseContent>
+      </div>
+    </div>
+  </section>
+</SegmentValueLayout>

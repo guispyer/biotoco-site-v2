@@ -1,0 +1,22 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  sections?: Array<{ id: string; label: string }>;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <Nav />
+  <slot name="hero" />
+  <main>
+    <slot />
+  </main>
+  <Footer />
+</BaseLayout>

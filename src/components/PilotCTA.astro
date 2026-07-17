@@ -1,0 +1,55 @@
+---
+interface Props {
+  headline: string;
+  description: string;
+  cta: string;
+  ctaLink?: string;
+  photoSrc?: string;
+  photoAlt?: string;
+  reassurance?: string;
+}
+
+const {
+  headline,
+  description,
+  cta,
+  ctaLink = '/contato',
+  photoSrc,
+  photoAlt = '',
+  reassurance = 'Resposta em até 2 dias úteis',
+} = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-biotoco-bege_terra py-24 max-lg:py-20 max-md:py-14">
+  <div class="absolute -left-16 -top-16 w-80 h-64 bg-biotoco-marrom_profundo/30 rounded-br-full" aria-hidden="true"></div>
+  <div class="relative max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+    <div class:list={[
+      photoSrc ? 'grid grid-cols-[1fr_380px] gap-16 items-center max-lg:grid-cols-1 max-lg:gap-10' : ''
+    ]}>
+      <div>
+        <h2 class="font-display font-bold text-[36px] leading-[1.15] tracking-[-0.01em] text-biotoco-azul_profundo [text-wrap:pretty] max-md:text-[26px]">
+          {headline}
+        </h2>
+        <p class="mt-4 text-lg leading-[1.6] text-biotoco-marrom_profundo [text-wrap:pretty] max-w-[560px]">
+          {description}
+        </p>
+        <div class="mt-8 flex flex-col items-start gap-3">
+          <a href={ctaLink} class="btn-on-bege">{cta}</a>
+          {reassurance && (
+            <span class="text-[13px] text-biotoco-marrom_profundo/70">{reassurance}</span>
+          )}
+        </div>
+      </div>
+      {photoSrc && (
+        <div class="overflow-hidden max-lg:order-first">
+          <img
+            src={photoSrc}
+            alt={photoAlt}
+            class="w-full h-[420px] object-cover leaf-corner max-md:h-[280px]"
+            loading="lazy"
+          />
+        </div>
+      )}
+    </div>
+  </div>
+</section>

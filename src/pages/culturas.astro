@@ -1,0 +1,96 @@
+---
+import SegmentValueLayout from '../layouts/SegmentValueLayout.astro';
+import Hero from '../components/Hero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import CropCard from '../components/CropCard.astro';
+import PilotCTA from '../components/PilotCTA.astro';
+import ProseContent from '../components/ProseContent.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
+import { getEntry, render } from 'astro:content';
+
+const entry = await getEntry('pages', 'culturas');
+if (!entry) throw new Error('Content entry not found: culturas');
+const { Content } = await render(entry);
+
+const {
+  title,
+  subtitle,
+  hero_cta,
+  crops,
+  custom_formulation_cta,
+} = entry.data as {
+  title: string;
+  subtitle: string;
+  hero_cta: string;
+  crops: Array<{
+    name: string;
+    models: string[];
+    key_benefit: string;
+    pain_addressed: string;
+    segment: string;
+    validated_by: string[];
+    status: string;
+  }>;
+  custom_formulation_cta: { headline: string; description: string; cta: string };
+};
+---
+
+<SegmentValueLayout title={title} description={subtitle} fullBleed>
+  <!-- Hero — verde_vital register -->
+  <Hero
+    slot="hero"
+    heading={title}
+    subheading={subtitle}
+    cta={hero_cta}
+    ctaLink="/contato"
+    eyebrow="Culturas"
+    register="verde_vital"
+    backgroundImage="/images/mudas/bandeja-viveiro.jpg"
+  />
+
+  <!-- Crop cards — off_white -->
+  {crops && crops.length > 0 && (
+    <section class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+      <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+        <SectionTitle tag="h2" eyebrow="Culturas atendidas" registerColor="biotoco-verde_vital" subtitle="Cada espécie tem uma dor radicular específica — e uma resposta BIOTOCO" class="mb-12">
+          Culturas atendidas
+        </SectionTitle>
+        <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {crops.map((crop, i) => (
+            <ScrollReveal delay={i * 80}>
+              <CropCard
+                name={crop.name}
+                models={crop.models}
+                key_benefit={crop.key_benefit}
+                pain_addressed={crop.pain_addressed}
+                segment={crop.segment}
+                validated_by={crop.validated_by}
+                status={crop.status}
+              />
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Custom formulation CTA — bege band -->
+  {custom_formulation_cta && (
+    <PilotCTA
+      headline={custom_formulation_cta.headline}
+      description={custom_formulation_cta.description}
+      cta={custom_formulation_cta.cta}
+    />
+  )}
+
+  <!-- Prose body — off_white -->
+  <section class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <div class="max-w-[720px]">
+        <ProseContent>
+          <Content />
+        </ProseContent>
+      </div>
+    </div>
+  </section>
+</SegmentValueLayout>

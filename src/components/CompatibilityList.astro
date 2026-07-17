@@ -1,0 +1,25 @@
+---
+interface Props {
+  points: string[];
+}
+
+const { points } = Astro.props;
+---
+
+<div class="flex flex-col">
+  {points.map((point) => (
+    <div class="flex items-center gap-4 py-3.5 border-t border-hairline [&:last-child]:border-b">
+      <svg
+        class="h-5 w-5 shrink-0 text-biotoco-verde_vital"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2.5"
+        aria-hidden="true"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+      </svg>
+      <span class="text-base leading-[1.6] text-biotoco-azul_texto">{point}</span>
+    </div>
+  ))}
+</div>

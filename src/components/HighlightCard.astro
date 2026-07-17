@@ -1,0 +1,23 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  index?: number;
+  icon?: string;
+}
+
+const { title, description, index = 1 } = Astro.props;
+
+const numeral = String(index).padStart(2, '0');
+---
+
+<div class="relative overflow-hidden bg-biotoco-off_white_claro border border-hairline rounded-[14px]
+            px-8 pt-9 pb-8 hover:border-biotoco-azul_profundo/30 transition-colors">
+  <span class="absolute top-5 right-[26px] font-display font-extrabold text-[64px]
+               text-biotoco-verde_vital/[.18] max-md:text-[44px] max-md:top-3.5 max-md:right-[18px]"
+        aria-hidden="true">{numeral}</span>
+  <h3 class="font-display font-bold text-2xl leading-[1.25] mb-3 pr-[90px] max-md:pr-16 text-biotoco-azul_profundo [text-wrap:pretty]">
+    {title}
+  </h3>
+  <p class="text-base leading-[1.6] text-biotoco-azul_texto_2">{description}</p>
+</div>

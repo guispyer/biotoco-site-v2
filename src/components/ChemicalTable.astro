@@ -1,0 +1,42 @@
+---
+interface Props {
+  standard: string;
+  note?: string;
+  values: Array<{ element: string; unit: string; value: string }>;
+}
+
+const { standard, note, values } = Astro.props;
+---
+
+<div class="rounded-biotocoLg border border-borderSubtle bg-white shadow-biotoco1 overflow-hidden">
+  <!-- Header -->
+  <div class="border-b border-borderSubtle bg-biotoco-azul_profundo/5 px-6 py-4">
+    <h3 class="font-display text-base font-bold text-biotoco-azul_profundo">{standard}</h3>
+    {note && (
+      <p class="mt-2 rounded-biotocoSm bg-biotoco-terracota/10 px-3 py-2 font-body text-xs leading-relaxed text-biotoco-terracota">
+        {note}
+      </p>
+    )}
+  </div>
+  <!-- Table -->
+  <div class="overflow-x-auto">
+    <table class="w-full">
+      <thead>
+        <tr class="border-b border-borderSubtle bg-biotoco-off_white/50">
+          <th class="px-6 py-3 text-left font-body text-xs font-semibold uppercase tracking-wide text-fgMuted">Elemento</th>
+          <th class="px-6 py-3 text-right font-body text-xs font-semibold uppercase tracking-wide text-fgMuted">Valor</th>
+          <th class="px-6 py-3 text-left font-body text-xs font-semibold uppercase tracking-wide text-fgMuted">Unidade</th>
+        </tr>
+      </thead>
+      <tbody>
+        {values.map((v, i) => (
+          <tr class:list={[i % 2 === 0 ? 'bg-white' : 'bg-biotoco-off_white/30', 'border-b border-borderSubtle last:border-0']}>
+            <td class="px-6 py-3 font-body text-sm font-medium text-biotoco-azul_profundo">{v.element}</td>
+            <td class="px-6 py-3 text-right font-display text-sm font-bold text-biotoco-verde_escuro">{v.value}</td>
+            <td class="px-6 py-3 font-body text-sm text-fgMuted">{v.unit}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
