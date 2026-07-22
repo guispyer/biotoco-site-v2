@@ -1,0 +1,263 @@
+---
+import SegmentValueLayout from '../layouts/SegmentValueLayout.astro';
+import Hero from '../components/Hero.astro';
+import HighlightCard from '../components/HighlightCard.astro';
+import RootComparison from '../components/RootComparison.astro';
+import ComparisonTable from '../components/ComparisonTable.astro';
+import PilotCTA from '../components/PilotCTA.astro';
+import StatusTag from '../components/StatusTag.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
+import ProseContent from '../components/ProseContent.astro';
+import { getEntry } from 'astro:content';
+
+const entry = await getEntry('pages', 'restauracao');
+if (!entry) throw new Error('Content entry not found: restauracao');
+
+const {
+  title,
+  subtitle,
+  hero_cta,
+  highlights,
+  models,
+  pilot_cta,
+  event_banner,
+} = entry.data as {
+  title: string;
+  subtitle: string;
+  hero_cta: string;
+  highlights: Array<{ title: string; description: string }>;
+  models: Array<{ name: string; volume: string; diameter: string; height: string; weight: string; indication: string }>;
+  pilot_cta: { headline: string; description: string; cta: string };
+  event_banner: { text: string; link: string };
+};
+
+// Client data parsed from prose body
+const clients: Array<{ name: string; location: string; detail: string; status: 'ativo' | 'em-teste' }> = [
+  { name: 'BIONEST', location: 'BA', detail: '200 mil peças/mês — mogno africano', status: 'ativo' },
+  { name: 'Régua', location: 'RJ', detail: 'Viveiro de mata atlântica', status: 'ativo' },
+  { name: 'Areté', location: 'RJ', detail: 'Plantio direto em Búzios', status: 'ativo' },
+  { name: 'SOS Mata Atlântica', location: '', detail: '10 mil B300, potencial 50–100 mil/mês', status: 'em-teste' },
+  { name: 'Reserva Natural Vale', location: 'ES', detail: 'Dados de campo com espécies nativas', status: 'em-teste' },
+];
+
+// Comparison table data
+const compAxes = [
+  'Logística reversa',
+  'Desentubetamento',
+  'Capex de máquina',
+  '100% biodegradável',
+  'Compatível com bandeja existente',
+  'Retenção de água (CRA)',
+  'Poda aérea',
+];
+
+const compSystems = [
+  { name: 'BIOTOCO', scores: ['Zero', 'Zero', 'Nenhum', 'Sim', 'Sim', '300–400%', 'Sim'] },
+  { name: 'Tubete plástico', scores: ['Sim, custo recorrente', 'Sim', 'Nenhum', 'Não', '—', 'Nenhuma', 'Não'] },
+  { name: 'Paperpot (Pleno Pot)', scores: ['Zero', 'Zero', 'Variável', 'Sim', 'Não (sistema próprio)', 'Sem dado', 'Não'] },
+  { name: 'Ellepot', scores: ['Zero', 'Zero', 'Variável', 'Não (30% poliéster)', 'Não (sistema próprio)', 'Sem dado', 'Não'] },
+];
+
+// Dealbreakers: [rowIdx, competitorIdx excluding Biotoco]
+const dealbreakers: [number, number][] = [
+  [0, 0], // Tubete: logística reversa
+  [1, 0], // Tubete: desentubetamento
+  [3, 0], // Tubete: não biodegradável
+  [3, 2], // Ellepot: não 100% biodegradável
+  [4, 1], // Paperpot: incompatível com bandeja
+  [4, 2], // Ellepot: incompatível com bandeja
+];
+---
+
+<SegmentValueLayout title={title} description={subtitle} fullBleed>
+  {/* 1. Hero — verde_vital register */}
+  <Hero
+    slot="hero"
+    heading={title}
+    subheading={subtitle}
+    cta={hero_cta}
+    ctaLink="/contato"
+    backgroundImage="/images/hero/mudas-top.jpg"
+    eyebrow="Restauração Ecológica"
+    register="verde_vital"
+    locationLine="Fabricado em Rio Claro, SP"
+  />
+
+  {/* 2. Event banner — azul_profundo thin strip — DELETE THIS SECTION AFTER 31 JUL 2026 */}
+  <section class="bg-biotoco-azul_profundo py-3 text-center border-t border-biotoco-off_white/20">
+    <p class="text-biotoco-off_white text-sm font-medium tracking-wide uppercase">
+      📍 {event_banner.text}
+    </p>
+  </section>
+
+  {/* 3. Problem statement — off_white */}
+  <ScrollReveal tag="section" class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <div class="max-w-[720px] mx-auto">
+      <ProseContent>
+        <p class="text-lg leading-[1.7] text-biotoco-azul_texto_2 mb-6">
+          Quem trabalha com restauração ecológica sabe a contradição: o programa existe para regenerar um ecossistema, e a operação de plantio enterra plástico nesse mesmo ecossistema.
+        </p>
+        <p class="text-lg leading-[1.7] text-biotoco-azul_texto_2 mb-6">
+          São milhões de tubetes por projeto. Cada um precisa voltar. Em restauração, "voltar" significa coletar recipiente em encosta de mata atlântica, em margem de rio, em área de reserva legal sem estrada pavimentada. A logística reversa que já é cara em viveiro convencional, em restauração é <strong>proibitiva</strong>.
+        </p>
+        <p class="text-lg leading-[1.7] text-biotoco-azul_texto_2">
+          Para quem tem compromisso com certificação de carbono, Rainforest Alliance ou relatório ESG — cada tubete plástico enterrado é uma linha de risco no próximo audit.
+        </p>
+      </ProseContent>
+      </div>
+    </div>
+  </ScrollReveal>
+
+  {/* 4. Value highlights — areia */}
+  <ScrollReveal tag="section" class="bg-biotoco-areia py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <Eyebrow color="biotoco-verde_vital" class="mb-4">Por que BIOTOCO</Eyebrow>
+      <h2 class="font-display font-bold text-[36px] leading-[1.15] tracking-[-0.01em] text-biotoco-azul_profundo [text-wrap:pretty] mb-12 max-lg:text-[30px] max-md:text-[26px]">
+        A operação mais cara desaparece
+      </h2>
+      <div class="grid grid-cols-3 gap-6 max-lg:grid-cols-1 max-lg:gap-5">
+        {highlights.map((item, i) => (
+          <HighlightCard title={item.title} description={item.description} index={i + 1} />
+        ))}
+      </div>
+    </div>
+  </ScrollReveal>
+
+  {/* 5. Models for restoration — off_white */}
+  <ScrollReveal tag="section" class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <Eyebrow color="biotoco-verde_vital" class="mb-4">Modelos para restauração</Eyebrow>
+      <h2 class="font-display font-bold text-[36px] leading-[1.15] tracking-[-0.01em] text-biotoco-azul_profundo [text-wrap:pretty] mb-12 max-lg:text-[30px] max-md:text-[26px]">
+        Três volumes, uma bandeja
+      </h2>
+
+      {/* Product lineup photo */}
+      <div class="mb-12">
+        <img
+          src="/images/product/linha-completa.jpg"
+          alt="Linha completa de módulos BIOTOCO — B20 a B400"
+          class="w-full max-w-[800px] mx-auto h-auto rounded-[14px]"
+          loading="lazy"
+        />
+      </div>
+
+      {/* Desktop table */}
+      <div class="max-md:hidden">
+        <div class="grid grid-cols-[1fr_1fr_1fr] gap-6">
+          {models.map((model) => (
+            <div class="bg-biotoco-off_white_claro border border-hairline rounded-[14px] px-8 py-8">
+              <h3 class="font-display font-bold text-[28px] text-biotoco-azul_profundo mb-4">{model.name}</h3>
+              <dl class="grid grid-cols-2 gap-y-3 text-sm">
+                <dt class="text-biotoco-cinza_apoio">Volume</dt>
+                <dd class="text-biotoco-azul_texto font-medium">{model.volume}</dd>
+                <dt class="text-biotoco-cinza_apoio">Diâmetro</dt>
+                <dd class="text-biotoco-azul_texto font-medium">{model.diameter}</dd>
+                <dt class="text-biotoco-cinza_apoio">Altura</dt>
+                <dd class="text-biotoco-azul_texto font-medium">{model.height}</dd>
+                <dt class="text-biotoco-cinza_apoio">Peso</dt>
+                <dd class="text-biotoco-azul_texto font-medium">{model.weight}</dd>
+              </dl>
+              <p class="mt-4 text-sm text-biotoco-azul_texto_2 border-t border-hairline pt-4">{model.indication}</p>
+            </div>
+          ))}
+        </div>
+        <p class="mt-6 text-sm text-biotoco-cinza_apoio">Todos encaixam em bandejas convencionais. Caixa padrão: 200 unidades.</p>
+      </div>
+
+      {/* Mobile cards */}
+      <div class="md:hidden flex flex-col gap-5">
+        {models.map((model) => (
+          <div class="bg-biotoco-off_white_claro border border-hairline rounded-[14px] px-6 py-6">
+            <h3 class="font-display font-bold text-[24px] text-biotoco-azul_profundo mb-3">{model.name}</h3>
+            <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm mb-3">
+              <span class="text-biotoco-cinza_apoio">Vol: <strong class="text-biotoco-azul_texto">{model.volume}</strong></span>
+              <span class="text-biotoco-cinza_apoio">{model.diameter}</span>
+              <span class="text-biotoco-cinza_apoio">{model.height}</span>
+              <span class="text-biotoco-cinza_apoio">{model.weight}</span>
+            </div>
+            <p class="text-sm text-biotoco-azul_texto_2">{model.indication}</p>
+          </div>
+        ))}
+        <p class="text-sm text-biotoco-cinza_apoio">Todos encaixam em bandejas convencionais. Caixa padrão: 200 unidades.</p>
+      </div>
+    </div>
+  </ScrollReveal>
+
+  {/* 6. Root architecture — azul_profundo */}
+  <ScrollReveal>
+    <RootComparison
+      eyebrow="Prova científica"
+      heading="O que sustenta os números"
+      paragraphs={[
+        'A UFRRJ documentou desenvolvimento radicular significativamente superior ao tubete plástico em experimento controlado. O trio de fibras (celulose, cana-de-açúcar, coco) cria porosidade que promove poda aérea — sistema radicular ramificado e distribuído, sem espiralamento.',
+        'Em restauração, a muda precisa se estabelecer sozinha por 25 anos ou mais. CRA de 300–400% retém água nas semanas críticas pós-plantio. A UFV/Embrapii acompanha B300-EM e B55-BL há 22 meses em teste de campo contínuo. EMBRAPA-Solo confirmou conformidade com a ABNT 15.448. Patente BR 102020013631-3.',
+      ]}
+      ctaText="Ver dados científicos"
+      ctaLink="/ciencia"
+      photos={[
+        { src: '/images/restauracao/comparacao-raiz-3vias.jpg', alt: 'Comparação de raízes: Paper Pot vs BIOTOCO vs Tubete Papel — três substratos lado a lado', caption: 'Comparação 3 vias — BIOTOCO com raiz mais densa e ramificada' },
+        { src: '/images/restauracao/raiz-penetracao.jpg', alt: 'Raízes penetrando através das paredes do módulo BIOTOCO — prova de biodegradabilidade', caption: 'Raízes atravessam a parede — módulo biodegrada em campo' },
+      ]}
+    />
+  </ScrollReveal>
+
+  {/* 7. Social proof + comparison — off_white */}
+  <ScrollReveal tag="section" class="bg-biotoco-off_white py-28 max-lg:py-20 max-md:py-14">
+    <div class="max-w-[1312px] mx-auto px-16 max-lg:px-10 max-md:px-6">
+      <div class="grid grid-cols-2 gap-20 max-lg:grid-cols-1 max-lg:gap-14">
+        {/* Left: Client list + RPPN photo */}
+        <div>
+          <img
+            src="/images/restauracao/rppn-guapiacu-nativas.jpg"
+            alt="Mudas de espécies nativas em módulos BIOTOCO na RPPN Guapiaçu — cedro, ipê, com etiquetas de identificação"
+            class="w-full h-[280px] object-cover rounded-[14px] mb-10"
+            loading="lazy"
+          />
+          <Eyebrow color="biotoco-verde_vital" class="mb-4">Quem já opera</Eyebrow>
+          <h2 class="font-display font-bold text-[36px] leading-[1.15] tracking-[-0.01em] text-biotoco-azul_profundo [text-wrap:pretty] mb-12 max-lg:text-[30px] max-md:text-[26px]">
+            Restauração em campo
+          </h2>
+          <div class="flex flex-col">
+            {clients.map((client) => (
+              <div class="flex items-center justify-between gap-4 py-5 border-t border-hairline [&:last-child]:border-b">
+                <div>
+                  <strong class="font-display font-bold text-[17px] text-biotoco-azul_profundo">
+                    {client.name}
+                  </strong>
+                  {client.location && (
+                    <span class="ml-2 text-sm text-biotoco-cinza_apoio">({client.location})</span>
+                  )}
+                  <span class="block text-sm text-biotoco-azul_texto_2 mt-0.5">{client.detail}</span>
+                </div>
+                <StatusTag status={client.status} />
+              </div>
+            ))}
+          </div>
+          <p class="mt-6 text-sm text-biotoco-cinza_apoio">Nenhum precisou trocar bandeja ou equipamento para começar.</p>
+        </div>
+
+        {/* Right: Comparison table */}
+        <div>
+          <Eyebrow color="biotoco-verde_vital" class="mb-4">Comparação direta</Eyebrow>
+          <h2 class="font-display font-bold text-[36px] leading-[1.15] tracking-[-0.01em] text-biotoco-azul_profundo [text-wrap:pretty] mb-12 max-lg:text-[30px] max-md:text-[26px]">
+            BIOTOCO vs. alternativas
+          </h2>
+          <ComparisonTable axes={compAxes} competitors={compSystems} dealbreakers={dealbreakers} />
+        </div>
+      </div>
+    </div>
+  </ScrollReveal>
+
+  {/* 8. CTA — bege_terra band */}
+  <PilotCTA
+    headline={pilot_cta.headline}
+    description={pilot_cta.description}
+    cta={pilot_cta.cta}
+    ctaLink="/contato"
+    photoSrc="/images/restauracao/viveiro-trabalhadores.jpg"
+    photoAlt="Trabalhadores manuseando mudas em viveiro de restauração com módulos BIOTOCO"
+    reassurance="Resposta em até 2 dias úteis"
+  />
+</SegmentValueLayout>
